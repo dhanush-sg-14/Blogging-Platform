@@ -5,13 +5,18 @@ import {
     useParams,
 } from 'react-router-dom'
 
+import { toast } from 'react-toastify'
+
 import API from '../services/api'
 
 function EditBlog() {
+
     const [formData, setFormData] = useState({
         title: '',
         content: '',
     })
+
+    const [loading, setLoading] = useState(false)
 
     const { id } = useParams()
 
@@ -22,19 +27,26 @@ function EditBlog() {
     }, [])
 
     const fetchBlog = async () => {
+
         try {
+
             const res = await API.get(`/blogs/${id}`)
 
             setFormData({
                 title: res.data.title,
                 content: res.data.content,
             })
+
         } catch (error) {
+
             console.log(error)
+
+            toast.error('Failed to Load Blog')
         }
     }
 
     const handleChange = (e) => {
+
         setFormData({
             ...formData,
             [e.target.name]: e.target.value,
@@ -42,9 +54,13 @@ function EditBlog() {
     }
 
     const handleSubmit = async (e) => {
+
         e.preventDefault()
 
+        setLoading(true)
+
         try {
+
             const token = localStorage.getItem('token')
 
             await API.put(
@@ -57,22 +73,29 @@ function EditBlog() {
                 }
             )
 
-            alert('Blog Updated')
+            toast.success('Blog Updated Successfully')
+
+            setLoading(false)
 
             navigate(`/blog/${id}`)
+
         } catch (error) {
+
             console.log(error)
 
-            alert('Update Failed')
+            toast.error('Update Failed')
+
+            setLoading(false)
         }
     }
 
     return (
-        <div className='max-w-3xl mx-auto p-6'>
 
-            <div className='bg-white shadow-xl rounded-2xl p-8'>
+        <div className='min-h-screen flex justify-center items-center bg-gray-100 px-4'>
 
-                <h1 className='text-4xl font-bold mb-6'>
+            <div className='w-full max-w-2xl bg-gradient-to-br from-blue-600 to-blue-400 shadow-2xl rounded-3xl p-8 text-white'>
+
+                <h1 className='text-4xl font-bold mb-8 text-center'>
                     Edit Blog
                 </h1>
 
@@ -83,25 +106,27 @@ function EditBlog() {
                         name='title'
                         value={formData.title}
                         onChange={handleChange}
-                        placeholder='Enter Title'
-                        className='w-full border p-3 rounded-lg mb-4'
+                        placeholder='Enter Blog Title'
+                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl mb-5 focus:outline-none focus:ring-4 focus:ring-blue-200'
                     />
 
                     <textarea
                         name='content'
                         value={formData.content}
                         onChange={handleChange}
-                        placeholder='Enter Content'
+                        placeholder='Enter Blog Content'
                         rows='10'
-                        className='w-full border p-3 rounded-lg mb-4'
+                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl mb-6 focus:outline-none focus:ring-4 focus:ring-blue-200 resize-none'
                     />
 
                     <button
                         type='submit'
-                        className='bg-blue-600 text-white px-6 py-3 rounded-lg'
+                        disabled={loading}
+                        className='bg-black hover:bg-gray-900 transition duration-300 text-white px-6 py-3 rounded-xl w-full font-semibold'
                     >
-                        Update Blog
+                        {loading ? 'Updating Blog...' : 'Update Blog'}
                     </button>
+
                 </form>
             </div>
         </div>

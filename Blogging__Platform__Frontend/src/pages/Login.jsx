@@ -1,11 +1,21 @@
 import { useState } from 'react'
+
+import { toast } from 'react-toastify'
+
+import { useNavigate } from 'react-router-dom'
+
 import API from '../services/api'
 
 function Login() {
+
     const [formData, setFormData] = useState({
         email: '',
         password: '',
     })
+
+    const [loading, setLoading] = useState(false)
+
+    const navigate = useNavigate()
 
     const handleChange = (e) => {
         setFormData({
@@ -15,59 +25,77 @@ function Login() {
     }
 
     const handleSubmit = async (e) => {
+
         e.preventDefault()
 
+        setLoading(true)
+
         try {
+
             const res = await API.post(
                 '/auth/login',
                 formData
             )
 
-            // Save token
             localStorage.setItem(
                 'token',
                 res.data.token
             )
 
-            alert('Login Successful')
+            toast.success('Login Successful')
 
-            console.log(res.data)
+            setLoading(false)
+
+            navigate('/')
+
         } catch (error) {
+
             console.log(error)
 
-            alert('Login Failed')
+            toast.error('Invalid Credentials')
+
+            setLoading(false)
         }
     }
 
     return (
-        <div>
-            <h1>Login Page</h1>
 
-            <form onSubmit={handleSubmit}>
-                <input
-                    type='email'
-                    name='email'
-                    placeholder='Enter Email'
-                    onChange={handleChange}
-                />
+        <div className='min-h-screen flex justify-center items-center bg-gray-100 px-4'>
 
-                <br />
-                <br />
+            <div className='w-full max-w-md bg-gradient-to-br from-blue-600 to-blue-400 shadow-2xl rounded-3xl p-8 text-white'>
 
-                <input
-                    type='password'
-                    name='password'
-                    placeholder='Enter Password'
-                    onChange={handleChange}
-                />
-
-                <br />
-                <br />
-
-                <button type='submit'>
+                <h1 className='text-4xl font-bold mb-8 text-center'>
                     Login
-                </button>
-            </form>
+                </h1>
+
+                <form onSubmit={handleSubmit}>
+
+                    <input
+                        type='email'
+                        name='email'
+                        placeholder='Enter Email'
+                        onChange={handleChange}
+                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl mb-4 focus:outline-none focus:ring-4 focus:ring-blue-200'
+                    />
+
+                    <input
+                        type='password'
+                        name='password'
+                        placeholder='Enter Password'
+                        onChange={handleChange}
+                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl mb-6 focus:outline-none focus:ring-4 focus:ring-blue-200'
+                    />
+
+                    <button
+                        type='submit'
+                        disabled={loading}
+                        className='bg-black hover:bg-gray-900 transition duration-300 text-white px-6 py-3 rounded-xl w-full font-semibold'
+                    >
+                        {loading ? 'Logging in...' : 'Login'}
+                    </button>
+
+                </form>
+            </div>
         </div>
     )
 }
