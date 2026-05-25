@@ -1,26 +1,4 @@
-// const mongoose = require('mongoose')
-
-// const blogSchema = new mongoose.Schema(
-//     {
-//         title: {
-//             type: String,
-//             required: true,
-//         },
-
-//         content: {
-//             type: String,
-//             required: true,
-//         },
-
-//         author: {
-//             type: mongoose.Schema.Types.ObjectId,
-//             ref: 'User',
-//         },
-//     },
-//     { timestamps: true }
-// )
-
-// module.exports = mongoose.model('Blog', blogSchema)
+// models/Blog.js
 
 const mongoose = require('mongoose')
 
@@ -29,6 +7,7 @@ const blogSchema = new mongoose.Schema(
         title: {
             type: String,
             required: true,
+            trim: true,
         },
 
         content: {
@@ -38,14 +17,36 @@ const blogSchema = new mongoose.Schema(
 
         image: {
             type: String,
+            default: '',
         },
 
         author: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
+            required: true,
+        },
+
+        category: {
+            type: String,
+            default: 'General',
+        },
+
+        likes: {
+            type: Number,
+            default: 0,
+        },
+
+        readingTime: {
+            type: String,
+            default: '1 min read',
         },
     },
-    { timestamps: true }
+    {
+        timestamps: true,
+    }
 )
 
-module.exports = mongoose.model('Blog', blogSchema)
+module.exports = mongoose.model(
+    'Blog',
+    blogSchema
+)

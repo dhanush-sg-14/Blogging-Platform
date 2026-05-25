@@ -1,17 +1,37 @@
+// controllers/blogController.js
+
 const Blog = require('../models/Blog')
 
 const createBlog = async (req, res) => {
 
     try {
 
-        const { title, content } = req.body
-
-        const blog = await Blog.create({
+        const {
             title,
             content,
+            category,
+        } = req.body
+
+        const words = content.split(' ').length
+
+        const readingTime =
+            Math.ceil(words / 200) +
+            ' min read'
+
+        const blog = await Blog.create({
+
+            title,
+
+            content,
+
+            category,
+
+            readingTime,
+
             image: req.file
                 ? `/uploads/${req.file.filename}`
                 : '',
+
             author: req.user.id,
         })
 
@@ -30,8 +50,13 @@ const getBlogs = async (req, res) => {
     try {
 
         const blogs = await Blog.find()
-            .populate('author', 'name email')
-            .sort({ createdAt: -1 })
+
+            .populate(
+                'author',
+                'name email'
+            )
+
+            .sort({ updatedAt: -1 })
 
         res.status(200).json(blogs)
 
@@ -43,12 +68,19 @@ const getBlogs = async (req, res) => {
     }
 }
 
-const getSingleBlog = async (req, res) => {
+const getSingleBlog = async (
+    req,
+    res
+) => {
 
     try {
 
-        const blog = await Blog.findById(req.params.id)
-            .populate('author', 'name email')
+        const blog = await Blog.findById(
+            req.params.id
+        ).populate(
+            'author',
+            'name email'
+        )
 
         if (!blog) {
 
@@ -67,11 +99,16 @@ const getSingleBlog = async (req, res) => {
     }
 }
 
-const updateBlog = async (req, res) => {
+const updateBlog = async (
+    req,
+    res
+) => {
 
     try {
 
-        const blog = await Blog.findById(req.params.id)
+        const blog = await Blog.findById(
+            req.params.id
+        )
 
         if (!blog) {
 
@@ -80,27 +117,45 @@ const updateBlog = async (req, res) => {
             })
         }
 
-        // Ownership Check
-
-        if (blog.author.toString() !== req.user.id) {
+        if (
+            blog.author.toString() !==
+            req.user.id
+        ) {
 
             return res.status(401).json({
                 message: 'Not authorized',
             })
         }
 
-        blog.title = req.body.title || blog.title
+        blog.title =
+            req.body.title || blog.title
 
-        blog.content = req.body.content || blog.content
+        blog.content =
+            req.body.content ||
+            blog.content
+
+        blog.category =
+            req.body.category ||
+            blog.category
+
+        const words =
+            blog.content.split(' ').length
+
+        blog.readingTime =
+            Math.ceil(words / 200) +
+            ' min read'
 
         if (req.file) {
 
             blog.image = `/uploads/${req.file.filename}`
         }
 
-        const updatedBlog = await blog.save()
+        const updatedBlog =
+            await blog.save()
 
-        res.status(200).json(updatedBlog)
+        res.status(200).json(
+            updatedBlog
+        )
 
     } catch (error) {
 
@@ -110,7 +165,7 @@ const updateBlog = async (req, res) => {
     }
 }
 
-const deleteBlog = async (req, res) => {
+const likeBlog = async (req, res) => {
 
     try {
 
@@ -123,9 +178,42 @@ const deleteBlog = async (req, res) => {
             })
         }
 
-        // Ownership Check
+        blog.likes += 1
 
-        if (blog.author.toString() !== req.user.id) {
+        await blog.save()
+
+        res.status(200).json(blog)
+
+    } catch (error) {
+
+        res.status(500).json({
+            message: error.message,
+        })
+    }
+}
+
+const deleteBlog = async (
+    req,
+    res
+) => {
+
+    try {
+
+        const blog = await Blog.findById(
+            req.params.id
+        )
+
+        if (!blog) {
+
+            return res.status(404).json({
+                message: 'Blog not found',
+            })
+        }
+
+        if (
+            blog.author.toString() !==
+            req.user.id
+        ) {
 
             return res.status(401).json({
                 message: 'Not authorized',
@@ -135,7 +223,8 @@ const deleteBlog = async (req, res) => {
         await blog.deleteOne()
 
         res.status(200).json({
-            message: 'Blog deleted successfully',
+            message:
+                'Blog deleted successfully',
         })
 
     } catch (error) {
@@ -147,9 +236,16 @@ const deleteBlog = async (req, res) => {
 }
 
 module.exports = {
+
     createBlog,
+
     getBlogs,
+
     getSingleBlog,
+
     updateBlog,
+
+    likeBlog,
+
     deleteBlog,
 }
