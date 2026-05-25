@@ -6,12 +6,20 @@ import {
 import { toast } from 'react-toastify'
 
 function Navbar() {
+
     const navigate = useNavigate()
 
     const token = localStorage.getItem('token')
 
+    const user = JSON.parse(
+        localStorage.getItem('user')
+    )
+
     const handleLogout = () => {
+
         localStorage.removeItem('token')
+
+        localStorage.removeItem('user')
 
         toast.info('Logged Out Successfully')
 
@@ -19,9 +27,10 @@ function Navbar() {
     }
 
     return (
+
         <nav className='bg-black text-white py-5 shadow-xl w-full'>
 
-            <div className='w-full px-12 flex justify-between items-center'>
+            <div className='w-full px-6 md:px-12 flex justify-between items-center'>
 
                 <Link
                     to='/'
@@ -30,7 +39,7 @@ function Navbar() {
                     MERN Blog
                 </Link>
 
-                <div className='flex gap-8 items-center text-lg font-medium'>
+                <div className='flex gap-6 items-center text-lg font-medium'>
 
                     <Link
                         to='/'
@@ -54,6 +63,10 @@ function Navbar() {
                             >
                                 My Blogs
                             </Link>
+
+                            <div className='bg-gray-800 px-4 py-2 rounded-xl text-sm'>
+                                👤 {user?.name}
+                            </div>
                         </>
                     )}
 

@@ -1,3 +1,5 @@
+// FULL UPDATED CreateBlog.jsx
+
 import { useState } from 'react'
 
 import { toast } from 'react-toastify'
@@ -13,9 +15,12 @@ function CreateBlog() {
     const [formData, setFormData] = useState({
         title: '',
         content: '',
+        category: '',
     })
 
     const [image, setImage] = useState(null)
+
+    const [preview, setPreview] = useState('')
 
     const [loading, setLoading] = useState(false)
 
@@ -25,6 +30,20 @@ function CreateBlog() {
             ...formData,
             [e.target.name]: e.target.value,
         })
+    }
+
+    const handleImageChange = (e) => {
+
+        const file = e.target.files[0]
+
+        if (file) {
+
+            setImage(file)
+
+            setPreview(
+                URL.createObjectURL(file)
+            )
+        }
     }
 
     const handleSubmit = async (e) => {
@@ -39,11 +58,27 @@ function CreateBlog() {
 
             const data = new FormData()
 
-            data.append('title', formData.title)
-            data.append('content', formData.content)
+            data.append(
+                'title',
+                formData.title
+            )
+
+            data.append(
+                'content',
+                formData.content
+            )
+
+            data.append(
+                'category',
+                formData.category
+            )
 
             if (image) {
-                data.append('image', image)
+
+                data.append(
+                    'image',
+                    image
+                )
             }
 
             const res = await API.post(
@@ -52,14 +87,17 @@ function CreateBlog() {
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
-                        'Content-Type': 'multipart/form-data',
+                        'Content-Type':
+                            'multipart/form-data',
                     },
                 }
             )
 
             console.log(res.data)
 
-            toast.success('Blog Created Successfully')
+            toast.success(
+                'Blog Created Successfully'
+            )
 
             setLoading(false)
 
@@ -69,7 +107,9 @@ function CreateBlog() {
 
             console.log(error)
 
-            toast.error('Blog Creation Failed')
+            toast.error(
+                'Blog Creation Failed'
+            )
 
             setLoading(false)
         }
@@ -85,56 +125,83 @@ function CreateBlog() {
                     Create Blog
                 </h1>
 
-                <form onSubmit={handleSubmit}>
+                <form
+                    onSubmit={handleSubmit}
+                    className='space-y-6'
+                >
 
                     <input
                         type='text'
                         name='title'
                         placeholder='Enter Blog Title'
                         onChange={handleChange}
-                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl mb-5 focus:outline-none focus:ring-4 focus:ring-blue-200'
+                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl'
                     />
+
+                    <select
+                        name='category'
+                        onChange={handleChange}
+                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl'
+                    >
+
+                        <option value=''>
+                            Select Category
+                        </option>
+
+                        <option value='Technology'>
+                            Technology
+                        </option>
+
+                        <option value='Programming'>
+                            Programming
+                        </option>
+
+                        <option value='Education'>
+                            Education
+                        </option>
+
+                        <option value='Entertainment'>
+                            Entertainment
+                        </option>
+
+                        <option value='Sports'>
+                            Sports
+                        </option>
+
+                    </select>
 
                     <textarea
                         name='content'
                         placeholder='Write your blog content here...'
                         onChange={handleChange}
                         rows='8'
-                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl mb-5 focus:outline-none focus:ring-4 focus:ring-blue-200 resize-none'
+                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl resize-none'
                     />
 
-                    <div className='mb-6'>
+                    <div>
 
                         <label className='block text-lg font-semibold mb-3'>
                             Upload Blog Image
                         </label>
 
-                        <label className='flex flex-col items-center justify-center w-full h-40 bg-white border-2 border-dashed border-gray-300 rounded-2xl cursor-pointer hover:bg-gray-100 transition duration-300 shadow-lg'>
+                        <label className='flex items-center justify-between bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-300 cursor-pointer'>
 
-                            <div className='flex flex-col items-center justify-center'>
+                            <div className='bg-black text-white px-6 py-4 font-semibold'>
+                                Choose File
+                            </div>
 
-                                <p className='text-xl font-bold text-gray-700'>
-                                    Click to Upload Image
-                                </p>
+                            <div className='flex-1 px-5 py-4 text-gray-700 truncate'>
 
-                                <p className='text-sm text-gray-500 mt-2'>
-                                    PNG, JPG, JPEG
-                                </p>
-
-                                {image && (
-                                    <p className='text-sm text-blue-600 mt-4 font-semibold px-4 text-center'>
-                                        {image.name}
-                                    </p>
-                                )}
+                                {image
+                                    ? image.name
+                                    : 'No file selected'}
 
                             </div>
 
                             <input
                                 type='file'
                                 accept='image/*'
-                                onChange={(e) =>
-                                    setImage(e.target.files[0])
-                                }
+                                onChange={handleImageChange}
                                 className='hidden'
                             />
 
@@ -142,16 +209,35 @@ function CreateBlog() {
 
                     </div>
 
+                    {preview && (
+
+                        <div className='bg-white rounded-3xl p-4 shadow-2xl'>
+
+                            <img
+                                src={preview}
+                                alt='Preview'
+                                className='w-full h-[350px] object-contain rounded-2xl bg-gray-100'
+                            />
+
+                        </div>
+                    )}
+
                     <button
                         type='submit'
                         disabled={loading}
-                        className='bg-black hover:bg-gray-900 transition duration-300 text-white px-6 py-3 rounded-xl w-full font-semibold text-lg'
+                        className='bg-black hover:bg-gray-900 text-white px-6 py-4 rounded-xl w-full font-semibold text-lg'
                     >
-                        {loading ? 'Creating Blog...' : 'Create Blog'}
+
+                        {loading
+                            ? 'Creating Blog...'
+                            : 'Create Blog'}
+
                     </button>
 
                 </form>
+
             </div>
+
         </div>
     )
 }
