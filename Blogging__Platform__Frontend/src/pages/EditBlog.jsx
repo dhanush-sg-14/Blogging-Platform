@@ -14,6 +14,7 @@ function EditBlog() {
     const [formData, setFormData] = useState({
         title: '',
         content: '',
+        category: '',
     })
 
     const [image, setImage] = useState(null)
@@ -34,11 +35,12 @@ function EditBlog() {
 
         try {
 
-            const res = await API.get(`/blogs/${id}`)
+            const res = await API.get(`/ blogs / ${id} `)
 
             setFormData({
                 title: res.data.title,
                 content: res.data.content,
+                category: res.data.category || '',
             })
 
             if (res.data.image) {
@@ -72,7 +74,9 @@ function EditBlog() {
 
             setImage(file)
 
-            setPreview(URL.createObjectURL(file))
+            setPreview(
+                URL.createObjectURL(file)
+            )
         }
     }
 
@@ -98,6 +102,11 @@ function EditBlog() {
                 formData.content
             )
 
+            updatedData.append(
+                'category',
+                formData.category || 'General'
+            )
+
             if (image) {
 
                 updatedData.append(
@@ -118,7 +127,9 @@ function EditBlog() {
                 }
             )
 
-            toast.success('Blog Updated Successfully')
+            toast.success(
+                'Blog Updated Successfully'
+            )
 
             setLoading(false)
 
@@ -136,11 +147,11 @@ function EditBlog() {
 
     return (
 
-        <div className='min-h-screen flex justify-center items-center bg-gray-100 px-4 py-10'>
+        <div className='min-h-screen flex justify-center items-center bg-gray-100 dark:bg-zinc-950 px-4 py-10 transition duration-300'>
 
-            <div className='w-full max-w-3xl bg-gradient-to-br from-blue-600 to-blue-400 shadow-2xl rounded-3xl p-8 text-white'>
+            <div className='w-full max-w-3xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-2xl rounded-3xl p-8 transition duration-300'>
 
-                <h1 className='text-4xl font-bold mb-8 text-center'>
+                <h1 className='text-4xl font-bold mb-8 text-center text-black dark:text-white'>
                     Edit Blog
                 </h1>
 
@@ -155,8 +166,45 @@ function EditBlog() {
                         value={formData.title}
                         onChange={handleChange}
                         placeholder='Enter Blog Title'
-                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200'
+                        className='w-full bg-gray-100 dark:bg-zinc-800 text-black dark:text-white border border-gray-300 dark:border-zinc-700 p-4 rounded-xl focus:outline-none'
                     />
+
+                    <select
+                        name='category'
+                        value={formData.category}
+                        onChange={handleChange}
+                        className='w-full bg-gray-100 dark:bg-zinc-800 text-black dark:text-white border border-gray-300 dark:border-zinc-700 p-4 rounded-xl focus:outline-none'
+                    >
+
+                        <option value=''>
+                            Select Category
+                        </option>
+
+                        <option value='Technology'>
+                            Technology
+                        </option>
+
+                        <option value='Programming'>
+                            Programming
+                        </option>
+
+                        <option value='Education'>
+                            Education
+                        </option>
+
+                        <option value='Entertainment'>
+                            Entertainment
+                        </option>
+
+                        <option value='Sports'>
+                            Sports
+                        </option>
+
+                        <option value='General'>
+                            General
+                        </option>
+
+                    </select>
 
                     <textarea
                         name='content'
@@ -164,22 +212,22 @@ function EditBlog() {
                         onChange={handleChange}
                         placeholder='Enter Blog Content'
                         rows='10'
-                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl focus:outline-none focus:ring-4 focus:ring-blue-200 resize-none'
+                        className='w-full bg-gray-100 dark:bg-zinc-800 text-black dark:text-white border border-gray-300 dark:border-zinc-700 p-4 rounded-xl resize-none focus:outline-none'
                     />
 
                     <div>
 
-                        <label className='block mb-4 text-lg font-semibold'>
+                        <label className='block mb-4 text-lg font-semibold text-black dark:text-white'>
                             Change Blog Image
                         </label>
 
-                        <label className='flex items-center justify-between bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-300 cursor-pointer hover:scale-[1.01] transition duration-300'>
+                        <label className='flex items-center justify-between bg-gray-100 dark:bg-zinc-800 rounded-2xl overflow-hidden shadow-lg border border-gray-300 dark:border-zinc-700 cursor-pointer'>
 
-                            <div className='bg-black text-white px-6 py-4 font-semibold'>
+                            <div className='bg-black dark:bg-zinc-700 text-white px-6 py-4 font-semibold'>
                                 Choose File
                             </div>
 
-                            <div className='flex-1 px-5 py-4 text-gray-700 truncate'>
+                            <div className='flex-1 px-5 py-4 text-gray-700 dark:text-gray-300 truncate'>
 
                                 {image
                                     ? image.name
@@ -200,15 +248,15 @@ function EditBlog() {
 
                     {preview && (
 
-                        <div className='bg-white rounded-3xl p-4 shadow-2xl'>
+                        <div className='bg-gray-100 dark:bg-zinc-800 rounded-3xl p-4 shadow-2xl'>
 
                             <img
                                 src={preview}
                                 alt='Preview'
-                                className='w-full h-[350px] object-contain rounded-2xl bg-gray-100'
+                                className='w-full h-[350px] object-contain rounded-2xl'
                             />
 
-                            <p className='text-center text-gray-500 mt-3'>
+                            <p className='text-center text-gray-500 dark:text-gray-400 mt-3'>
                                 Image Preview
                             </p>
 
@@ -218,7 +266,7 @@ function EditBlog() {
                     <button
                         type='submit'
                         disabled={loading}
-                        className='bg-black hover:bg-gray-900 transition duration-300 text-white px-6 py-4 rounded-xl w-full font-semibold text-lg'
+                        className='bg-black dark:bg-zinc-700 hover:bg-gray-900 dark:hover:bg-zinc-600 transition duration-300 text-white px-6 py-4 rounded-xl w-full font-semibold text-lg'
                     >
                         {loading
                             ? 'Updating Blog...'
@@ -226,7 +274,9 @@ function EditBlog() {
                     </button>
 
                 </form>
+
             </div>
+
         </div>
     )
 }

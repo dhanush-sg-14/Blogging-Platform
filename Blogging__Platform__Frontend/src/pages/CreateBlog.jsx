@@ -1,5 +1,3 @@
-// FULL UPDATED CreateBlog.jsx
-
 import { useState } from 'react'
 
 import { toast } from 'react-toastify'
@@ -70,7 +68,7 @@ function CreateBlog() {
 
             data.append(
                 'category',
-                formData.category
+                formData.category || 'General'
             )
 
             if (image) {
@@ -81,7 +79,7 @@ function CreateBlog() {
                 )
             }
 
-            const res = await API.post(
+            await API.post(
                 '/blogs',
                 data,
                 {
@@ -92,8 +90,6 @@ function CreateBlog() {
                     },
                 }
             )
-
-            console.log(res.data)
 
             toast.success(
                 'Blog Created Successfully'
@@ -117,11 +113,11 @@ function CreateBlog() {
 
     return (
 
-        <div className='min-h-screen flex justify-center items-center bg-gray-100 px-4 py-10'>
+        <div className='min-h-screen flex justify-center items-center bg-gray-100 dark:bg-zinc-950 px-4 py-10 transition duration-300'>
 
-            <div className='w-full max-w-2xl bg-gradient-to-br from-blue-600 to-blue-400 shadow-2xl rounded-3xl p-8 text-white'>
+            <div className='w-full max-w-2xl bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-2xl rounded-3xl p-8 transition duration-300'>
 
-                <h1 className='text-4xl font-bold mb-8 text-center'>
+                <h1 className='text-4xl font-bold mb-8 text-center text-black dark:text-white'>
                     Create Blog
                 </h1>
 
@@ -135,13 +131,13 @@ function CreateBlog() {
                         name='title'
                         placeholder='Enter Blog Title'
                         onChange={handleChange}
-                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl'
+                        className='w-full bg-gray-100 dark:bg-zinc-800 text-black dark:text-white border border-gray-300 dark:border-zinc-700 p-4 rounded-xl focus:outline-none'
                     />
 
                     <select
                         name='category'
                         onChange={handleChange}
-                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl'
+                        className='w-full bg-gray-100 dark:bg-zinc-800 text-black dark:text-white border border-gray-300 dark:border-zinc-700 p-4 rounded-xl focus:outline-none'
                     >
 
                         <option value=''>
@@ -168,6 +164,10 @@ function CreateBlog() {
                             Sports
                         </option>
 
+                        <option value='General'>
+                            General
+                        </option>
+
                     </select>
 
                     <textarea
@@ -175,22 +175,22 @@ function CreateBlog() {
                         placeholder='Write your blog content here...'
                         onChange={handleChange}
                         rows='8'
-                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl resize-none'
+                        className='w-full bg-gray-100 dark:bg-zinc-800 text-black dark:text-white border border-gray-300 dark:border-zinc-700 p-4 rounded-xl resize-none focus:outline-none'
                     />
 
                     <div>
 
-                        <label className='block text-lg font-semibold mb-3'>
+                        <label className='block text-lg font-semibold mb-3 text-black dark:text-white'>
                             Upload Blog Image
                         </label>
 
-                        <label className='flex items-center justify-between bg-white rounded-2xl overflow-hidden shadow-lg border border-gray-300 cursor-pointer'>
+                        <label className='flex items-center justify-between bg-gray-100 dark:bg-zinc-800 rounded-2xl overflow-hidden shadow-lg border border-gray-300 dark:border-zinc-700 cursor-pointer'>
 
-                            <div className='bg-black text-white px-6 py-4 font-semibold'>
+                            <div className='bg-black dark:bg-zinc-700 text-white px-6 py-4 font-semibold'>
                                 Choose File
                             </div>
 
-                            <div className='flex-1 px-5 py-4 text-gray-700 truncate'>
+                            <div className='flex-1 px-5 py-4 text-gray-700 dark:text-gray-300 truncate'>
 
                                 {image
                                     ? image.name
@@ -211,12 +211,12 @@ function CreateBlog() {
 
                     {preview && (
 
-                        <div className='bg-white rounded-3xl p-4 shadow-2xl'>
+                        <div className='bg-gray-100 dark:bg-zinc-800 rounded-3xl p-4 shadow-2xl transition duration-300'>
 
                             <img
                                 src={preview}
                                 alt='Preview'
-                                className='w-full h-[350px] object-contain rounded-2xl bg-gray-100'
+                                className='w-full h-[350px] object-contain rounded-2xl'
                             />
 
                         </div>
@@ -225,7 +225,7 @@ function CreateBlog() {
                     <button
                         type='submit'
                         disabled={loading}
-                        className='bg-black hover:bg-gray-900 text-white px-6 py-4 rounded-xl w-full font-semibold text-lg'
+                        className='bg-black dark:bg-zinc-700 hover:bg-gray-900 dark:hover:bg-zinc-600 text-white px-6 py-4 rounded-xl w-full font-semibold text-lg transition duration-300'
                     >
 
                         {loading

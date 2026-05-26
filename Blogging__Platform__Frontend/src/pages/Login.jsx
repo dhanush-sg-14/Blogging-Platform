@@ -12,23 +12,6 @@ function Login() {
 
     const token = localStorage.getItem('token')
 
-    useEffect(() => {
-
-        // IF USER ALREADY LOGGED IN
-
-        if (token) {
-            navigate('/')
-        }
-
-        // CLEAR AUTO FILLED VALUES
-
-        setFormData({
-            email: '',
-            password: '',
-        })
-
-    }, [])
-
     const [showPassword, setShowPassword] = useState(false)
 
     const [formData, setFormData] = useState({
@@ -37,6 +20,19 @@ function Login() {
     })
 
     const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+
+        if (token) {
+            navigate('/')
+        }
+
+        setFormData({
+            email: '',
+            password: '',
+        })
+
+    }, [])
 
     const handleChange = (e) => {
 
@@ -87,11 +83,11 @@ function Login() {
 
     return (
 
-        <div className='min-h-screen flex justify-center items-center bg-gray-100 px-4'>
+        <div className='min-h-screen flex justify-center items-center bg-gray-100 dark:bg-zinc-950 px-4 transition duration-300'>
 
-            <div className='w-full max-w-md bg-gradient-to-br from-blue-600 to-blue-400 shadow-2xl rounded-3xl p-8 text-white'>
+            <div className='w-full max-w-md bg-white dark:bg-zinc-900 border border-gray-200 dark:border-zinc-800 shadow-2xl rounded-3xl p-8 transition duration-300'>
 
-                <h1 className='text-4xl font-bold mb-8 text-center'>
+                <h1 className='text-4xl font-bold mb-8 text-center text-black dark:text-white'>
                     Login
                 </h1>
 
@@ -107,7 +103,7 @@ function Login() {
                         placeholder='Enter Email'
                         onChange={handleChange}
                         autoComplete='new-email'
-                        className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl mb-4 focus:outline-none focus:ring-4 focus:ring-blue-200'
+                        className='w-full bg-gray-100 dark:bg-zinc-800 text-black dark:text-white border border-gray-300 dark:border-zinc-700 p-4 rounded-xl mb-4 focus:outline-none'
                     />
 
                     <div className='relative mb-6'>
@@ -123,7 +119,7 @@ function Login() {
                             placeholder='Enter Password'
                             onChange={handleChange}
                             autoComplete='new-password'
-                            className='w-full bg-white text-black border border-gray-300 p-4 rounded-xl pr-14 focus:outline-none focus:ring-4 focus:ring-blue-200'
+                            className='w-full bg-gray-100 dark:bg-zinc-800 text-black dark:text-white border border-gray-300 dark:border-zinc-700 p-4 rounded-xl pr-14 focus:outline-none'
                         />
 
                         <button
@@ -133,45 +129,9 @@ function Login() {
                                     !showPassword
                                 )
                             }
-                            className='absolute right-4 top-1/2 -translate-y-1/2 text-black text-xl'
+                            className='absolute right-4 top-1/2 -translate-y-1/2 text-black dark:text-white text-xl'
                         >
-                            {showPassword ? (
-
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="22"
-                                    height="22"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M10.73 5.08A10.43 10.43 0 0 1 12 5c7 0 10 7 10 7a13.16 13.16 0 0 1-1.67 2.68" />
-                                    <path d="M6.61 6.61A13.52 13.52 0 0 0 2 12s3 7 10 7a9.74 9.74 0 0 0 5.39-1.61" />
-                                    <line x1="2" y1="2" x2="22" y2="22" />
-                                    <path d="M9.88 9.88a3 3 0 1 0 4.24 4.24" />
-                                </svg>
-
-                            ) : (
-
-                                <svg
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    width="22"
-                                    height="22"
-                                    viewBox="0 0 24 24"
-                                    fill="none"
-                                    stroke="currentColor"
-                                    strokeWidth="2"
-                                    strokeLinecap="round"
-                                    strokeLinejoin="round"
-                                >
-                                    <path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0z" />
-                                    <circle cx="12" cy="12" r="3" />
-                                </svg>
-
-                            )}
+                            {showPassword ? '🙈' : '👁️'}
                         </button>
 
                     </div>
@@ -179,7 +139,7 @@ function Login() {
                     <button
                         type='submit'
                         disabled={loading}
-                        className='bg-black hover:bg-gray-900 transition duration-300 text-white px-6 py-3 rounded-xl w-full font-semibold'
+                        className='bg-black dark:bg-zinc-700 hover:bg-gray-900 dark:hover:bg-zinc-600 transition duration-300 text-white px-6 py-3 rounded-xl w-full font-semibold'
                     >
                         {loading
                             ? 'Logging in...'
@@ -189,6 +149,7 @@ function Login() {
                 </form>
 
             </div>
+
         </div>
     )
 }
